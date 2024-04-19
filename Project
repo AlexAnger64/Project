@@ -1,0 +1,173 @@
+import java.util.Scanner;
+
+public class Project {
+    public static void main(String[] args) {
+        Game gm = new Game();
+        gm.startGame();
+    }
+}
+
+class Game {
+    private Troop infantry;
+    private Troop tank;
+    private Troop sniper;
+    private Troop plane;
+    private int net;
+    private int spawnUpgradeCost;
+    private int spawnUpgradeAmount;
+    private int level;
+    private double earnings;
+
+    public Game() {
+        infantry = new Troop("Infantry", 2, 5, 1, 10, 3);
+        tank = new Troop("Tank", 2, 5, 1, 10, 3);
+        sniper = new Troop("Sniper", 2, 5, 1, 10, 3);
+        plane = new Troop("Fighter Plane", 2, 5, 1, 10, 3);
+        net = 100;
+        spawnUpgradeCost = 50;
+        spawnUpgradeAmount = 1;
+        level = 1;
+        earnings = 0;
+    }
+
+    public void startGame() {
+        Scanner scan = new Scanner(System.in);
+        boolean run = true;
+
+        System.out.println("Welcome to the Troop Spawning Game!");
+
+        while (run) {
+            System.out.println("\nCurrent Balance: $" + net);
+            System.out.println("Troop Status:");
+            System.out.println("Money: $" + net);
+            System.out.println(infantry);
+            System.out.println(tank);
+            System.out.println(sniper);
+            System.out.println(plane);
+
+            String menu = "*** Available Actions ***\n" +
+                    "1. Spawn Infantry\n" +
+                    "2. Spawn Tank\n" +
+                    "3. Spawn Sniper\n" +
+                    "4. Spawn Fighter Plane\n" +
+                    "5. Go to Battle\n" +
+                    "6. Upgrade Spawner (Cost: $" + spawnUpgradeCost + ", Current: +" + spawnUpgradeAmount + ")\n" +
+                    "w. Exit Game\n" +
+                    "Enter your choice: ";
+
+            System.out.print(menu);
+            String choice = scan.nextLine();
+
+            if ("1".equals(choice)) {
+                    spawnTroop(infantry);
+                } else if ("2".equals(choice)) {
+                    spawnTroop(tank);
+                } else if ("3".equals(choice)) {
+                    spawnTroop(sniper);
+                } else if ("4".equals(choice)) {
+                    spawnTroop(plane);
+                } else if ("5".equals(choice)) {
+                    goToBattle();
+                } else if ("6".equals(choice)) {
+                    upgradeSpawner();
+                } else if ("w".equalsIgnoreCase(choice)) {
+                    System.out.println("Thanks for playing!");
+                    run = false;
+                } else {
+                    System.out.println("Invalid choice! Please choose again.");
+                }
+        }
+            scan.close();
+    }
+
+    private void spawnTroop(Troop troop) {
+        
+            troop.spawn(spawnUpgradeAmount);
+            
+            System.out.println("Spawned " + troop.getName());
+        
+    }
+
+    void goToBattle() {
+        System.out.println("Entering battle...");
+        int enemyStrength = level * 50 + (int) (Math.random() * 50); // Random enemy strength based on level
+        int playerStrength = calculatePlayerStrength();
+        System.out.println("Enemy Strength: " + enemyStrength);
+        System.out.println("Your Troop Strength: " + playerStrength);
+
+        if (playerStrength > enemyStrength) {
+            earnings = level * 125; // Random earnings based on level
+            net += earnings;
+            System.out.println("Victory! Earned $" + earnings + " in battle!");
+            level++;
+            System.out.println("\n=== Battle Result: Victory ===");
+            System.out.println("\nEarnings: " + earnings);
+        } else {
+            System.out.println("Defeat! Lost the battle.");
+            
+            earnings = 0;
+            System.out.println("\n=== Battle Result: Defeat ===");
+            System.out.println("\nEarnings: 0");
+        }
+
+        // Display battle result screen
+       
+        
+        
+        System.out.println("Level: " + level);
+    }
+
+    private int calculatePlayerStrength() {
+        return infantry.getAmt() + tank.getAmt() + sniper.getAmt() + plane.getAmt();
+    }
+
+    private void upgradeSpawner() {
+        if (net >= spawnUpgradeCost) {
+            net -= spawnUpgradeCost; // Deduct upgrade cost first
+            spawnUpgradeAmount++;
+            spawnUpgradeCost *= 2; // Increase upgrade cost for next level
+            System.out.println("Spawner upgraded! New spawn amount: +" + spawnUpgradeAmount + ". New Balance: $" + net);
+        } else {
+            System.out.println("Insufficient funds to upgrade spawner.");
+        }
+    }
+}
+
+class Troop {
+    private String name;
+    private int hit;
+    private int price;
+    private int rate;
+    private int amt;
+    private int health;
+
+    public Troop(String name, int hit, int price, int rate, int amt, int health) {
+        this.name = name;
+        this.hit = hit;
+        this.price = price;
+        this.rate = rate;
+        this.amt = amt;
+        this.health = health;
+    }
+
+    public void spawn(int upgradeAmount) {
+        amt += rate * upgradeAmount;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getPrice() {
+        return price;
+    }
+
+    public int getAmt() {
+        return amt;
+    }
+
+    @Override
+    public String toString() {
+        return name + ": Amount=" + amt;
+    }
+}
