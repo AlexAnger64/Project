@@ -38,8 +38,6 @@ class Game {
 
         while (run) {
             System.out.println("\nCurrent Balance: $" + net);
-            System.out.println("Troop Status:");
-            System.out.println("Money: $" + net);
             System.out.println(infantry);
             System.out.println(tank);
             System.out.println(sniper);
