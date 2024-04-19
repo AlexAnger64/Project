@@ -19,6 +19,7 @@ class Game {
     private double earnings;
 
     public Game() {
+//initialize troop objects
         infantry = new Troop("Infantry", 2, 5, 1, 10, 3);
         tank = new Troop("Tank", 2, 5, 1, 10, 3);
         sniper = new Troop("Sniper", 2, 5, 1, 10, 3);
